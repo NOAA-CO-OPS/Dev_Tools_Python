@@ -6,3 +6,7 @@ CO-OPS' data API call is limited to 31 days of 6-minute data so this function wi
 PLEASE BE AWARE that sending too many API data requests at once can overload CO-OPS' data servers. To account for this, the time.sleep() function is implemented to pause for 3 seconds between successive API requests. Users should also ensure that this function is implemented between API requests when augmenting this code for their own use.
 
 # CoopsAPI
+Class of data retrieval functions for CO-OPS APIs
+
+# get_data
+Sample program to retrieve water level observations for a given station using the the Center for Operational Oceanographic Products and Services (CO-OPS) APIs, including the Data API.
