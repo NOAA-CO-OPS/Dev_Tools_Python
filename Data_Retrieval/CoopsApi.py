@@ -31,16 +31,21 @@
 # of the United States.
 #
 # REVISION HISTORY
-
-# LL  - created 2/5/2018
-# LRA - modified 5/18/2020
 #
+#   2018/02/05 - LL - Created
+#
+#   2020/05/18 - LA - Time.sleep() added & license & disclaimer info
+#   
+#   2020/07/17 - LA - Updated to Python 3 - replaced urllib to requests
+#                     Retrieve data as json instead of csv
 
     
 import datetime as dt
-import urllib as ul
-import csv as csv
+import requests
+import csv as csvy
 import time as time
+import pandas as pd
+import numpy as np
 
 # Class of data retrieval functions for CO-OPS APIs
 class CoopsApi:
@@ -135,14 +140,8 @@ class CoopsApi:
         # The errorsFound variable will be returned as a list of errors, if any, found
         # during the calling of the URL for the data
         errorsFound = ['No errors were found']
-        
-        
-        # Define if this the first time the URL is being called.  If so, header information
-        # will be used to make the output dictionary.  If not, then the output dictionary will
-        # be populated with the information from the URL
-        firstTime  = 'yes'
-        outputDict = dict()
-        temp       = dict()
+
+        aDict =dict()
 
         # URL information
         server = 'https://tidesandcurrents.noaa.gov/api/datagetter'
@@ -162,7 +161,7 @@ class CoopsApi:
                         '&datum='       + datum                         +
                         '&units='       + units                         +
                         '&time_zone='   + timeZone                      +
-                        '&application=OD_python&format=csv' )
+                        '&application=OD_python&format=json' )
             
             print("Querying the data API via " + urlRequest)
             
@@ -174,59 +173,52 @@ class CoopsApi:
                 urlRequest = ( urlRequest + '&interval=' + interval )
 
             # Read the url response
-            urlResponse = ul.urlopen(urlRequest)
-            urlResponse = urlResponse.read()
+            urlResponse = requests.get(urlRequest)
+            content = urlResponse.json()
 
-            # read the csv output
-            # get the file headers information
-            headers  = urlResponse.split('\n')[0]
-            eMessage = urlResponse.split('\n')[1]
+            # make the dictionary fields
+            data = {'date_time':[],'value':[]}
             
-
             # check for errors
-            if ('Error' in eMessage):
-                errorsFound.append(eMessage)
+            if 'error' in content:
+                print(content['error'],['message'])
             else:
                 # no errors found
-                if firstTime == 'yes':
-                    # first time calling the url, make the dictionary fields
-                    for h in headers.split(','):
-                        outputDict[h.strip()] = []
-                    firstTime = 'no'
                 
-                for line in urlResponse.split('\n')[1:-1]:
-                    # populate the output dictionary
-                    for i in range(0,len(headers.split(','))):
-                        v = line.split(',')[i]
-                        h = headers.split(',')[i].strip()
-                            
-                        try:
-                            temp[h] = float(v)
-                        except:
-                            try:
-                                temp[h] = dt.datetime.strptime(v,'%Y-%m-%d %H:%M')
-                            except:
-                                temp[h] = v.strip()
-                        outputDict[h].append(temp[h])
+                # populate the output dictionary with date/time and values
+                for aDict in content['data']:
+                    try:
+                        date_time = pd.to_datetime(aDict['t'])
+                    except ValueError:
+                        date_time = pandas.NaT
+                    try:
+                        value = float(aDict['v'])
+                    except ValueError:
+                        value = np.NaN
+                    data['date_time'].append(date_time)
+                    data['value'].append(value)
+
+            #change lists to numpy arrays
+            output = pd.DataFrame(data)
                         
             # Pause for 3 seconds between API requests. Do not modify this.
             time.sleep(3)
             
         # Done cycling through 31 day intervals for requested date/time period
         
-        # if errors were found, remove the 'no errors were found' part of the message
+        # If errors were found, remove the 'no errors were found' part of the message
         if len(errorsFound)>1:
             errorsFound.remove(errorsFound[0])
 
-        # If the request product is datum information, then clean up the output dictionary
-        if product == 'datums':
-            temp = dict()
-            dCount = 0
-            for d in outputDict['Datum']:
-                temp[d] = outputDict['Value'][dCount]
-                dCount += 1
-            outputDict = temp
+ #       # If the request product is datum information, then clean up the output dictionary
+ #       if product == 'datums':
+ #           temp = dict()
+ #           dCount = 0
+ #           for d in aDict['Datum']:
+ #               temp[d] = aDict['Value'][dCount]
+ #               dCount += 1
+ #           aDict = temp
 
             
-        return outputDict, errorsFound
+        return output, errorsFound
         
