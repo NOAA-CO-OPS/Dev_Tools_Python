@@ -38,7 +38,6 @@ import datetime
 from CoopsApi import CoopsApi
 
 # Data parameters
-#station_id="9414290-INVALID"
 station_id="9414290"
 start_date=datetime.datetime(2020,4,1)
 end_date=datetime.datetime(2020,4,30)
@@ -55,9 +54,9 @@ print("Returned keys:" + str(output.keys()))
 
 
 # Let's iterate through the timestamps and water level values
-num_values=len(output['Date Time'])
+num_values=len(output['date_time'])
 i=0
 while i<num_values:
-    print(str(output['Date Time'][i]),output['Water Level'][i])
+    print(str(output['date_time'][i]),output['water_level'][i])
     i=i+1
 
