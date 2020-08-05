@@ -38,6 +38,7 @@
 #   
 #   2020/07/17 - LA - Updated to Python 3 - replaced urllib to requests
 #                     Retrieve data as json instead of csv
+#   2020/08/05 - LA - Remove H and M codes for strftime
 
     
 import datetime as dt
@@ -154,8 +155,8 @@ class CoopsApi:
                 d2 = dateRange[1]
 
             urlRequest = ( server   +
-                        '?begin_date='  + d.strftime('%Y%m%d %H:%M')    +
-                        '&end_date='    + d2.strftime('%Y%m%d %H:%M')   +
+                        '?begin_date='  + d.strftime('%Y%m%d')    +
+                        '&end_date='    + d2.strftime('%Y%m%d')   +
                         '&station='     + stationID                     +
                         '&product='     + product                       +
                         '&datum='       + datum                         +
