@@ -145,7 +145,7 @@ class CoopsApi:
         aDict =dict()
 
         # URL information
-        server = 'https://tidesandcurrents.noaa.gov/api/datagetter'
+        server = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter'
         
         # call the API recursivly
         for d in startDate:
