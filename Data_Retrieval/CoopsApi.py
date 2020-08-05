@@ -39,6 +39,7 @@
 #   2020/07/17 - LA - Updated to Python 3 - replaced urllib to requests
 #                     Retrieve data as json instead of csv
 #   2020/08/05 - LA - Remove H and M codes for strftime
+#                     API endpoint updated
 
     
 import datetime as dt
