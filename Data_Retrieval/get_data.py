@@ -57,6 +57,6 @@ print("Returned keys:" + str(output.keys()))
 num_values=len(output['date_time'])
 i=0
 while i<num_values:
-    print(str(output['date_time'][i]),output['water_level'][i])
+    print(str(output['date_time'][i]),output['value'][i])
     i=i+1
 
