@@ -129,6 +129,9 @@ class CoopsApi:
         else:
             step = dt.timedelta(days=31)
 
+        # make the dictionary fields
+        data = {'date_time':[],'value':[]}
+        
         # create the startDate list.  This will be the information used in calling the
         # API recursively.  The end date of the request will be startDate + step - dt.timedelta(minutes=6)
         startDate = [dateRange[0]]
@@ -177,9 +180,6 @@ class CoopsApi:
             # Read the url response
             urlResponse = requests.get(urlRequest)
             content = urlResponse.json()
-
-            # make the dictionary fields
-            data = {'date_time':[],'value':[]}
             
             # check for errors
             if 'error' in content:

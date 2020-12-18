@@ -40,7 +40,7 @@ from CoopsApi import CoopsApi
 # Data parameters
 station_id="9414290"
 start_date=datetime.datetime(2020,4,1)
-end_date=datetime.datetime(2020,4,30)
+end_date=datetime.datetime(2020,6,30)
 
 
 # Create a CoopsApi instance and query the API for data. Check for errors
